@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Mapper;
 // mybatis가 DB에서 값을 가져오기 위해 사용
 public interface BoardMapper {
 	public int insBoard(BoardVO param);
-	public List<BoardVO> selBoardList();
+	public List<BoardVO> selBoardList(BoardVO param);
 	public BoardVO selBoard(BoardVO param);
 	public int updBoard(BoardVO param);
 	public int delBoard(int param);

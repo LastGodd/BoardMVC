@@ -6,4 +6,6 @@ public class Const {
 	public static final String KAKAO_ACCESS_TOKEN_HOST = "https://kauth.kakao.com/oauth/token";
 	public static final String KAKAO_API_HOST = "https://kapi.kakao.com";
 	
+	// 게시판 한번에 가져오는 데이터 수
+	public static final int ROW_CONUT = 60;
 }

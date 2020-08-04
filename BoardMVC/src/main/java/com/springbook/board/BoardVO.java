@@ -6,6 +6,28 @@ public class BoardVO {
 	private String ctnt;
 	private String r_dt;
 	
+	private int sIdx;
+	private int count;
+	private String searchText;
+	
+	public String getSearchText() {
+		return searchText;
+	}
+	public void setSearchText(String searchText) {
+		this.searchText = searchText;
+	}
+	public int getsIdx() {
+		return sIdx;
+	}
+	public void setsIdx(int sIdx) {
+		this.sIdx = sIdx;
+	}
+	public int getCount() {
+		return count;
+	}
+	public void setCount(int count) {
+		this.count = count;
+	}
 	public int getI_board() {
 		return i_board;
 	}
