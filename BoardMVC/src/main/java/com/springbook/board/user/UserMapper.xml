@@ -14,7 +14,7 @@
 		resultType="com.springbook.board.user.UserVO">
 		SELECT i_user, uid, upw, nm, r_dt
 		FROM t_user
-		WHERE uid = #{uid} 
+		WHERE uid = #{uid}
 	</select>
 	
 </mapper>
