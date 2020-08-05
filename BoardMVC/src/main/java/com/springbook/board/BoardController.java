@@ -26,11 +26,13 @@ public class BoardController {
 	
 	@ResponseBody
 	@RequestMapping(value = "/getListData", method = RequestMethod.GET)
-	public Map<String, Object> getListData(@RequestParam int page) {
+	public Map<String, Object> getListData(@RequestParam int page,
+			@RequestParam String searchText ) {
 		System.out.println("page: " + page);
+		System.out.println("searchText: " + searchText);
 		
 		Map<String, Object> map = new HashMap();
-		map.put("result", service.selBoardList(page));
+		map.put("result", service.selBoardList(page, searchText));
 		
 		return map;
 	}

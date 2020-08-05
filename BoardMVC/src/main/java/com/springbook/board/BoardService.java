@@ -18,12 +18,13 @@ public class BoardService {
 		return mapper.insBoard(param);
 	}
 	
-	public List<BoardVO> selBoardList(int page) {
+	public List<BoardVO> selBoardList(int page, String searchText) {
 		int sIdx = (page - 1) * Const.ROW_CONUT;
 		
 		BoardVO param = new BoardVO();
 		param.setsIdx(sIdx);
 		param.setCount(Const.ROW_CONUT);
+		param.setSearchText(searchText);
 		
 		return mapper.selBoardList(param);
 	}

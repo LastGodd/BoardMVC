@@ -10,11 +10,14 @@
 	</insert>
 
 	<select id="selBoardList" parameterType="com.springbook.board.BoardVO"
-	resultType="com.springbook.board.BoardVO">
+		resultType="com.springbook.board.BoardVO">
 		SELECT i_board, title, r_dt 
 		FROM t_board
+		<if test='searchText != null and searchText !=""'>
+			WHERE title like '%${searchText}%' 
+		</if>
 		ORDER BY i_board DESC
-		LIMIT #{sIdx}, #{count}
+		LIMIT ${sIdx}, ${count}
 	</select>
 	
 	<select id="selBoard" resultType="com.springbook.board.BoardVO" 
