@@ -24,8 +24,7 @@
 	</beans:bean>
 	
 	<context:component-scan base-package="com.springbook.board" />
-
-	<!-- Hikari setting -->
+		
 	<beans:bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
 	    <beans:property name="poolName" value="springHikariCP" />
 	    <beans:property name="connectionTestQuery" value="SELECT 1" />
@@ -37,20 +36,27 @@
 		<beans:property name="username" value="root"/>
 		<beans:property name="password" value="1234"/> 
 	</beans:bean>
-
-	<!-- HikariCP configuration -->
+		
 	<beans:bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
 	    <beans:constructor-arg ref="hikariConfig" />
 	</beans:bean>
-
-	<!-- mybitis -->
+	
 	<beans:bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
 		<beans:property name="dataSource" ref="dataSource"/>
+		<beans:property name="configLocation" value="/WEB-INF/spring/mybatis-alias.xml"/>
 	</beans:bean>
-	
-	<!-- mybatis-spring:scan -->
-	<mybatis-spring:scan base-package="com.springbook.board"/>
-	
+	<mybatis-spring:scan base-package="com.springbook.board"/>	
+		
 	<beans:bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+	
+	<interceptors>
+		<interceptor>
+			<mapping path="/board/*"/>
+			<beans:bean class="com.springbook.board.common.CheckInterceptor"/>
+		</interceptor>
+	</interceptors>	
+	
+	
+	
 	
 </beans:beans>

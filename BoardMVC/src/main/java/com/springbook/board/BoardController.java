@@ -12,8 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value="/board")
-// Controller - 서블릿 역할
+@RequestMapping(value = "/board")
 public class BoardController {
 	
 	@Autowired
@@ -27,9 +26,9 @@ public class BoardController {
 	@ResponseBody
 	@RequestMapping(value = "/getListData", method = RequestMethod.GET)
 	public Map<String, Object> getListData(@RequestParam int page,
-			@RequestParam String searchText ) {
-		System.out.println("page: " + page);
-		System.out.println("searchText: " + searchText);
+			@RequestParam String searchText) {
+		System.out.println("page : " + page);
+		System.out.println("searchText : " + searchText);
 		
 		Map<String, Object> map = new HashMap();
 		map.put("result", service.selBoardList(page, searchText));
@@ -75,8 +74,6 @@ public class BoardController {
 		int result = service.delBoard(i_board);
 		return "redirect:/board/list";
 	}
-	
-
 	
 	
 }

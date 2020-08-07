@@ -12,7 +12,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -27,48 +26,45 @@ import com.springbook.board.common.KakaoUserInfo;
 import com.springbook.board.common.MyUtils;
 
 @Service
-//Service - Controller의 로직담당
 public class UserService {
-
+	
 	@Autowired
 	private UserMapper mapper;
-
-	// 회원가입
+	
 	public int join(UserVO param) {
 		int result = 0;
 		String salt = MyUtils.gensalt();
 		String pw = param.getUpw();
-		String hashPw = MyUtils.hashPassword(pw, salt);
-
+		String hashPw = MyUtils.hashPassword(pw, salt);		
+		
 		param.setUpw(hashPw);
 		param.setSalt(salt);
-		// param.setUpw(MyUtils.hashPassword(param.getUpw()));
-
+		//param.setUpw(MyUtils.hashPassword(param.getUpw()));
+				
 		result = mapper.join(param);
 		return result;
 	}
-
-	// 1:로그인성공 2:아이디 없음 3:비밀번호 틀림
-	public int login(UserVO param, HttpSession hs, Model model) {
+	
+	//1:로그인(pk, 이름) , 0: 에러, 2:아이디없음, 3:비밀번호 틀림
+	public int login(UserVO param, HttpSession hs) {
 		int result = 0;
-		UserVO db = mapper.login(param);
-		if (db != null) {
-			String pw = param.getUpw();
-			String salt = db.getSalt();
-			System.out.println(param.getUpw());
-			System.out.println(db.getSalt());
-			String hashPw = MyUtils.hashPassword(pw, salt);
-			if (db.getUpw().equals(hashPw)) {
-				db.setUpw(null);
-				hs.setAttribute("loginUser", db);
+		UserVO data = mapper.login(param);
+		
+		if(data == null) {
+			result = 2;
+		} else {
+			String clientUpw = MyUtils.hashPassword(param.getUpw(), data.getSalt());
+			if(data.getUpw().equals(clientUpw)) {
 				result = 1;
+				UserVO loginUser = new UserVO();
+				loginUser.setI_user(data.getI_user());
+				loginUser.setNm(data.getNm());
+				
+				hs.setAttribute("loginUser", loginUser);
 			} else {
 				result = 3;
 			}
-		} else {
-			result = 2;
 		}
-		model.addAttribute("data", param);
 		return result;
 	}
 
@@ -139,9 +135,9 @@ public class UserService {
 			
 			System.out.println("id: " + kui.getId());
 			System.out.println("connected_at: " + kui.getConnected_at());
-			System.out.println("nickname: " +kui.getProperties().getNickname());
-			System.out.println("profile_image: " + kui.getProperties().getProfile_image());
-			System.out.println("thumbnail_image: " + kui.getProperties().getThumbnail_image());
+			System.out.println("nickname: " + kui.getProperties().getNickname());
+			System.out.println("profile_img: " + kui.getProperties().getProfile_image());
+			System.out.println("thumb_img: " + kui.getProperties().getThumbnail_image());
 			
 		} catch (JsonMappingException e) {			
 			e.printStackTrace();

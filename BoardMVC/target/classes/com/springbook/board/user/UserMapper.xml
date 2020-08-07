@@ -1,27 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.springbook.board.user.UserMapper">
+<mapper namespace="com.springbook.board.user.UserMapper"> 
 	
 	<insert id="join" parameterType="com.springbook.board.user.UserVO"
-	useGeneratedKeys="true" keyProperty="i_user">
+		useGeneratedKeys="true" keyProperty="i_user">
 		INSERT INTO t_user
 		(uid, upw, salt, nm, addr, ph) 
 		VALUES
 		(#{uid}, #{upw}, #{salt}, #{nm}, #{addr}, #{ph})
 	</insert>
-
+	
 	<select id="login" parameterType="com.springbook.board.user.UserVO"
 		resultType="com.springbook.board.user.UserVO">
-		SELECT i_user, uid, upw, nm, r_dt
+		SELECT i_user, uid, upw, nm, r_dt, salt
 		FROM t_user
-		WHERE uid = #{uid}
+		WHERE uid = #{uid}	
 	</select>
 	
+	
 </mapper>
-
-
-
-
-
-
-

@@ -9,7 +9,7 @@ public class BoardVO {
 	private int sIdx;
 	private int count;
 	private String searchText;
-	
+			
 	public String getSearchText() {
 		return searchText;
 	}
@@ -51,6 +51,5 @@ public class BoardVO {
 	}
 	public void setR_dt(String r_dt) {
 		this.r_dt = r_dt;
-	}
-	
+	}	
 }
