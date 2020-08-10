@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -48,7 +49,7 @@ public class UserService {
 	//1:로그인(pk, 이름) , 0: 에러, 2:아이디없음, 3:비밀번호 틀림
 	public int login(UserVO param, HttpSession hs) {
 		int result = 0;
-		UserVO data = mapper.login(param);
+		UserVO data = mapper.selUser(param);
 		
 		if(data == null) {
 			result = 2;
@@ -150,7 +151,7 @@ public class UserService {
 		UserVO param = new UserVO();
 		param.setUid(String.valueOf(kui.getId()));
 		
-		UserVO dbResult = mapper.login(param);
+		UserVO dbResult = mapper.selUser(param);
 		
 		if(dbResult == null) { //회원가입
 			param.setNm(kui.getProperties().getNickname());
@@ -167,5 +168,65 @@ public class UserService {
 		hs.setAttribute("loginUser", dbResult);
 		
 		return result;
+	}
+	
+	public void delProfileImgParent(HttpSession hs) {
+		delProfileImg(hs);
+		
+		UserVO loginUser = (UserVO)hs.getAttribute("loginUser");
+		
+		//DB profileImg에 빈칸 넣기
+		UserVO param = new UserVO();
+		param.setI_user(loginUser.getI_user());
+		param.setProfileImg("");
+		
+		mapper.updUser(param);
+	}
+	
+	private void delProfileImg(HttpSession hs) {
+		UserVO loginUser = (UserVO)hs.getAttribute("loginUser");
+
+		String realPath = hs.getServletContext().getRealPath("/"); //루트 절대경로 가져오기
+		String imgFolder = realPath + "/resources/img/user/" + loginUser.getI_user();
+		
+		UserVO dbUser = mapper.selUser(loginUser);
+		if(!"".equals(dbUser.getProfileImg())) { //기존 이미지가 있으면 삭제 처리
+			String imgPath = imgFolder + "/" + dbUser.getProfileImg();
+			MyUtils.deleteFile(imgPath);
+		}	
+	}
+	
+	public void uploadProfile(MultipartFile file, HttpSession hs) {
+		UserVO loginUser = (UserVO)hs.getAttribute("loginUser");		
+				
+		delProfileImg(hs); //기존 이미지 삭제
+		
+		String realPath = hs.getServletContext().getRealPath("/"); //루트 절대경로 가져오기
+		String imgFolder = realPath + "/resources/img/user/" + loginUser.getI_user();
+		
+		String fileNm = MyUtils.saveFile(imgFolder, file);
+
+		UserVO param = new UserVO();
+		param.setI_user(loginUser.getI_user());
+		param.setProfileImg(fileNm);
+		
+		mapper.updUser(param);		
+	}
+	
+	public String getProfileImg(HttpSession hs) {
+		String profileImg = null;
+		
+		UserVO loginUser = (UserVO)hs.getAttribute("loginUser");
+		UserVO dbResult = mapper.selUser(loginUser);
+		
+		profileImg = dbResult.getProfileImg();
+		
+		if(profileImg == null || profileImg.equals("")) {
+			profileImg = "/resources/img/base_profile.png";
+		} else {
+			profileImg = "/resources/img/user/" + loginUser.getI_user() + "/" + profileImg;
+		}
+		
+		return profileImg;
 	}
 }

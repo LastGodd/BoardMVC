@@ -10,12 +10,24 @@
 		(#{uid}, #{upw}, #{salt}, #{nm}, #{addr}, #{ph})
 	</insert>
 	
-	<select id="login" parameterType="com.springbook.board.user.UserVO"
+	<select id="selUser" parameterType="com.springbook.board.user.UserVO"
 		resultType="com.springbook.board.user.UserVO">
-		SELECT i_user, uid, upw, nm, r_dt, salt
+		SELECT i_user, uid, upw, nm, r_dt, salt, profileImg
 		FROM t_user
-		WHERE uid = #{uid}	
-	</select>
+		WHERE 
+		<if test='uid != null and uid != ""'>uid = #{uid}</if>	
+		<if test='i_user > 0'>i_user = #{i_user}</if>
+	</select>	
 	
+	<update id="updUser" parameterType="com.springbook.board.user.UserVO">	
+		UPDATE t_user
+		SET m_dt = now()
+		<if test='upw != null and upw !=""'>, upw = #{upw}</if>
+		<if test='nm != null and nm !=""'>, nm = #{nm}</if>
+		<if test='addr != null and addr !=""'>, addr = #{addr}</if>
+		<if test='ph != null and ph !=""'>, ph = #{ph}</if>
+		<if test='profileImg != null'>, profileImg = #{profileImg}</if>		
+		WHERE i_user = #{i_user}	
+	</update>
 	
 </mapper>

@@ -1,4 +1,3 @@
-
 package com.springbook.board.user;
 
 import java.util.HashMap;
@@ -111,14 +110,26 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/profile", method=RequestMethod.GET)
-	public String profile(Model model) {		
+	public String profile(Model model, HttpSession hs) {				
+		model.addAttribute("myProfile", service.getProfileImg(hs));
 		return "user/profile";
 	}
 	
 	@RequestMapping(value="/profile", method=RequestMethod.POST)
-	public String profile(@RequestParam("uploadProfile") MultipartFile uploadProfile) {			
-		System.out.println("uploadProfile : " + uploadProfile);
-		return "user/profile";
+	public String profile(@RequestParam("uploadProfile") MultipartFile file
+			, HttpSession hs) {
+		
+		if(!file.isEmpty()) {
+			service.uploadProfile(file, hs);			
+		}
+		
+		return "redirect:/user/profile";
+	}
+	
+	@RequestMapping(value="/delProfile", method=RequestMethod.GET)
+	public String profile(HttpSession hs) {
+		service.delProfileImgParent(hs);
+		return "redirect:/user/profile";
 	}
 	
 	@RequestMapping(value="/logout", method=RequestMethod.GET)

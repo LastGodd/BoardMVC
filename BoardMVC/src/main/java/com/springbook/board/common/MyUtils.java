@@ -1,6 +1,12 @@
 package com.springbook.board.common;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
+
+import org.apache.commons.io.FilenameUtils;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.web.multipart.MultipartFile;
 
 public class MyUtils {
 	
@@ -24,6 +30,48 @@ public class MyUtils {
 			result += (int)(Math.random() * 10);
 		}
 		return result;
+	} 
+	
+	//리턴값: 저장된 파일명
+	// "/resources/user/??"
+	public static String saveFile(String path, MultipartFile file) {
+		String fileNm = null;
+		UUID uuid = UUID.randomUUID();
+		
+		// 확장자
+		String ext = FilenameUtils.getExtension(file.getOriginalFilename());
+		System.out.println("ext : " + ext);
+		
+		fileNm = String.format("%s.%s", uuid, ext);
+		String saveFileNm = String.format("%s/%s", path, fileNm);
+		
+		System.out.println("saveFileNm : " + saveFileNm);
+		File saveFile = new File(saveFileNm);
+		saveFile.mkdirs();
+		
+		try {
+			file.transferTo(saveFile); // 업로드 파일에 saveFile 위치로 저장
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+		return fileNm;
 	}
+	
+	//이미지 삭제
+	public static boolean deleteFile(String filePath) {
+		boolean result = false;
+		File file = new File(filePath);
+		if(file.exists()) {
+			result = file.delete();
+		}
+		return result;
+	}
+	
+	
+	
+	
 }
 
